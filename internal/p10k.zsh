@@ -2260,6 +2260,20 @@ function _p9k_cached_cmd() {
 }
 
 ################################################################
+# Segment to diplay Helm version
+prompt_helm_version() {
+  if (( _POWERLEVEL9K_HELM_VERSION_PROJECT_ONLY )); then
+    _p9k_upglob 'Chart.yaml|.helmignore' && return
+  fi
+  _p9k_cached_cmd 0 helm version --template "{{ .Version }}" || return
+  _p9k_prompt_segment "$0" "green" "white" 'HELM_ICON' 0 '' "${_p9k__ret#v}"
+}
+
+_p9k_prompt_helm_version_init() {
+  typeset -g "_p9k__segment_cond_${_p9k__prompt_side}[_p9k__segment_index]"='$commands[helm]'
+}
+
+################################################################
 # Segment to diplay Node version
 prompt_node_version() {
   if (( _POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY )); then
@@ -6867,6 +6881,7 @@ _p9k_init_params() {
     15) _POWERLEVEL9K_LOAD_WHICH=3;;
     *) _POWERLEVEL9K_LOAD_WHICH=2;;
   esac
+  _p9k_declare -b POWERLEVEL9K_HELM_VERSION_PROJECT_ONLY 0
   _p9k_declare -b POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY 0
   _p9k_declare -b POWERLEVEL9K_PHP_VERSION_PROJECT_ONLY 0
   _p9k_declare -b POWERLEVEL9K_DOTNET_VERSION_PROJECT_ONLY 1
